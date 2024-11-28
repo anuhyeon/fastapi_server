@@ -1,5 +1,8 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, File, UploadFile
+from pydantic import BaseModel 
+from fastapi.responses import JSONResponse# frame 전송
+import shutil# frame 전송
+from pathlib import Path# frame 전송
 import uvicorn
 
 app = FastAPI()
@@ -29,6 +32,21 @@ async def get_text():
     ROS 노드가 텍스트를 가져갈 수 있는 엔드포인트
     """
     return {"text": data_store["text"]}
+
+
+# 이미지 저장 경로 설정
+UPLOAD_DIR = Path("./frame")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+@app.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    file_path = UPLOAD_DIR / file.filename
+    try:
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        return JSONResponse(content={"message": f"Image '{file.filename}' 업로드 성공 아기모띠"}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 def main():
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
