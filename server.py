@@ -55,8 +55,9 @@ async def upload_image(
         detection_info = json.loads(detection_data)  # JSON 문자열을 Python 객체로 변환
         print('-=-=-=-=-=-=-=-=',detection_info,'-=--=-=-=-=-=-=-=-=-=')
         print("Detection Data Received:")
+        
         for detection in detection_info:
-            print(f"idx: {detection['idx']} Label: {detection['label']}, Confidence: {detection['confidence']}, Bounding Box: {detection['bounding_box']}")
+            print(f"idx: {detection['idx']} Label: {detection['label']}, Confidence: {detection['confidence']}, Bounding Box: {detection['bounding_box']},3d_point: {detection['rgb_3d_coordinates']}")
 
         # 성공 응답 반환
         return JSONResponse(content={"message": f"Image '{file.filename}' and detection data processed successfully."}, status_code=200)
