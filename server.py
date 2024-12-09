@@ -162,9 +162,10 @@ async def update_text(request: TextRequest): # request는 클라이언트로부�
         data_store["x"] = request.x
         data_store["y"] = request.y
         data_store["z"] = request.z
-        print(data_store["x"])
-        print(data_store["y"])
-        print(data_store["z"])
+        print("==recieve==")
+        print("x: ", data_store["x"])
+        print("y: ", data_store["y"])
+        print("z: ", data_store["z"])
         return {"message": "Text updated", "x": request.x, "y": request.y, "z": request.z}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update text: {e}")

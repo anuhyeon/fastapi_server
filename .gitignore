@@ -1,4 +1,4 @@
 __pycache__
 .venv
-./frame/*.png
-./images/*.png
+./frame/*.jpg
+./images/*.jpg
