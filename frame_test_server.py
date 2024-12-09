@@ -23,4 +23,4 @@ async def upload_image(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run("frame_test_server:app", host="192.168.0.218", port=8080, reload=True)
+    uvicorn.run("frame_test_server:app", host="172.16.43.231", port=8080, reload=True) #"192.168.0.218"

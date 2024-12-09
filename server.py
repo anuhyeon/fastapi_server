@@ -10,7 +10,133 @@ from typing import Optional, Union
 app = FastAPI()
 
 # 텍스트 데이터를 저장할 저장소
-data_store = {"text": ""}
+data_store = {"x": "", "y": "", "z": ""}
+
+detection_info = [
+    {
+        "idx": 1,
+        "label": "person",
+        "confidence": 0.9094,
+        "bounding_box": [462, 110, 851, 720],
+        "depth_3d_coordinates": {
+            "x": 0.0405,
+            "y": 0.1353,
+            "z": 1.691
+        },
+        "rgb_3d_coordinates": {
+            "x": 292, "y": 238, "z": 0.56
+        }
+    },
+    {
+        "idx": 2,
+        "label": "person",
+        "confidence": 0.8246,
+        "bounding_box": [421, 199, 622, 622],
+        "depth_3d_coordinates": {
+            "x": -0.2586,
+            "y": 0.1606,
+            "z": 2.15
+        },
+        "rgb_3d_coordinates": {
+            "x": 521, "y": 195, "z": 0.57
+        }
+    },
+    {
+        "idx": 3,
+        "label": "person",
+        "confidence": 0.8753,
+        "bounding_box": [400, 220, 700, 600],
+        "depth_3d_coordinates": {
+            "x": 0.1001,
+            "y": 0.1402,
+            "z": 1.73
+        },
+        "rgb_3d_coordinates": {
+            "x'": 0.1189,
+            "y'": 0.1450,
+            "z'": 1.729
+        }
+    },
+    {
+        "idx": 4,
+        "label": "person",
+        "confidence": 0.8024,
+        "bounding_box": [480, 150, 820, 720],
+        "depth_3d_coordinates": {
+            "x": -0.1203,
+            "y": 0.1521,
+            "z": 2.05
+        },
+        "rgb_3d_coordinates": {
+            "x'": -0.1004,
+            "y'": 0.1556,
+            "z'": 2.0512
+        }
+    },
+    {
+        "idx": 5,
+        "label": "person",
+        "confidence": 0.9001,
+        "bounding_box": [500, 190, 830, 740],
+        "depth_3d_coordinates": {
+            "x": 0.0895,
+            "y": 0.1208,
+            "z": 1.69
+        },
+        "rgb_3d_coordinates": {
+            "x'": 0.0998,
+            "y'": 0.1241,
+            "z'": 1.6921
+        }
+    },
+    {
+        "idx": 6,
+        "label": "person",
+        "confidence": 0.8123,
+        "bounding_box": [400, 200, 700, 650],
+        "depth_3d_coordinates": {
+            "x": -0.1894,
+            "y": 0.1583,
+            "z": 2.13
+        },
+        "rgb_3d_coordinates": {
+            "x": 997, "y": 537, "z": 0.41
+        }
+    },
+    {
+        "idx": 7,
+        "label": "person",
+        "confidence": 0.8950,
+        "bounding_box": [430, 210, 750, 690],
+        "depth_3d_coordinates": {
+            "x": 0.0507,
+            "y": 0.1449,
+            "z": 1.72
+        },
+        "rgb_3d_coordinates": {
+            "x'": 0.0693,
+            "y'": 0.1428,
+            "z'": 1.7215
+        }
+    },
+    {
+        "idx": 8,
+        "label": "person",
+        "confidence": 0.8436,
+        "bounding_box": [390, 170, 650, 600],
+        "depth_3d_coordinates": {
+            "x": -0.2154,
+            "y": 0.1405,
+            "z": 2.18
+        },
+        "rgb_3d_coordinates": {
+            "x'": -0.2001,
+            "y'": 0.1383,
+            "z'": 2.1796
+        }
+    }
+]
+
 
 # 업로드된 이미지와 관련된 탐지 정보를 저장하는 딕셔너리
 detection_store = {}
@@ -20,29 +146,35 @@ detection_store = {}
 # Pydantic은 Python 데이터 유효성 검사와 설정 관리를 위한 라이브러리
 # TextRequest 클래스는 클라이언트로부터 받은 데이터의 구조를 정의하고, 데이터의 유효성을 자동으로 검사
 class TextRequest(BaseModel):
-    text: Union[str, int, list, None] = None  # 문자열, 정수, 리스트 모두 허용
+    x: Union[str, int, list, float] = None  # 문자열, 정수, 리스트 모두 허용
+    y: Union[str, int, list, float] = None  # 문자열, 정수, 리스트 모두 허용
+    z: Union[str, int, list, float] = None  # 문자열, 정수, 리스트 모두 허용
     # text: str
     # text: Optional[str] = None  # 문자열이 없을 수도 있음
 
-
-@app.post("/update_text")
+@app.post("/xyz")
 async def update_text(request: TextRequest): # request는 클라이언트로부터 받아오는 요청 매개변수임. 해당 매개변수를 TextRequest인스턴스에 넘겨서 유효성 검사를 진행
     """
     iOS로부터 텍스트를 업데이트하는 엔드포인트
     """
+    print(request)
     try:
-        data_store["text"] = request.text
-        print(data_store["text"])
-        return {"message": "Text updated", "text": request.text}
+        data_store["x"] = request.x
+        data_store["y"] = request.y
+        data_store["z"] = request.z
+        print(data_store["x"])
+        print(data_store["y"])
+        print(data_store["z"])
+        return {"message": "Text updated", "x": request.x, "y": request.y, "z": request.z}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update text: {e}")
 
-@app.get("/get_text")
-async def get_text():
-    """
-    ROS 노드가 텍스트를 가져갈 수 있는 엔드포인트
-    """
-    return {"text": data_store["text"]}
+# @app.get("/get_text")
+# async def get_text():
+#     """
+#     ROS 노드가 텍스트를 가져갈 수 있는 엔드포인트
+#     """
+#     return {"text": data_store["text"]}
 
 
 # 이미지 저장 경로 설정
@@ -94,9 +226,9 @@ async def get_frame(frame_name: str):
             raise HTTPException(status_code=404, detail=f"Frame '{frame_name}' not found.")
 
         # 탐지 정보 가져오기
-        detection_info = detection_store.get(frame_name)
-        if detection_info is None:
-            raise HTTPException(status_code=404, detail=f"No detection data found for frame '{frame_name}'.")
+        # detection_info = detection_store.get(frame_name)
+        # if detection_info is None:
+        #     raise HTTPException(status_code=404, detail=f"No detection data found for frame '{frame_name}'.")
 
         # JSON 응답에 이미지 경로와 탐지 정보 포함
         return JSONResponse(content={
@@ -131,7 +263,7 @@ async def serve_frame(frame_name: str):
 
 
 def main():
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server:app", host="172.16.43.231", port=8000, reload=True) #host="0.0.0.0"
 
 if __name__ == "__main__":
     main()
